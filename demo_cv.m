@@ -9,8 +9,8 @@ clc;
 % demo ±àºÅ,ÐèÒªÐÞ¸Ä  
 ii = 1;  
 % Add path  
-addpath(genpath('./Image'));  
-addpath(genpath('./CV solver'));   
+% addpath(genpath('./Image'));  
+% addpath(genpath('./CV solver'));   
 % save result path  
 SaveFilePath = './Results/';  
   
