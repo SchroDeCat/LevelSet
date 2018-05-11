@@ -1,4 +1,4 @@
-function phi = EVOL_CV(phi0,Img,lambda1,lambda2,mu,pu,timestep,epsilon,numIter)  
+function [phi, C1, C2] = EVOL_CV(phi0,Img,lambda1,lambda2,mu,pu,timestep,epsilon,numIter)  
 %   input:  
 %       Img: input image  
 %       phi0: level set function to be updated  
@@ -21,7 +21,7 @@ for k=1:numIter
     delta_h = Dirac(phi,epsilon);  
     H = Heaviside(phi,epsilon);  
     Curv = curvature(phi,2);  
-    [C1,C2]=binaryfit_CV(Img,H);  
+    [C1,C2]=binaryfit_CV(Img,H); 
     F_CV = (-lambda1*(Img-C1).^2+lambda2*(Img-C2).^2);  
     penalizingTerm=pu*(4*del2(phi)-Curv);  
     lengthTerm = delta_h.*Curv ;  

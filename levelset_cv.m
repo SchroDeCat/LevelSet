@@ -1,31 +1,28 @@
-%demo_CV.m  
-%Author: HSW  
-%Date；2015/4/12  
-% HARBIN INSTITUTE OF TECHNOLOGY  
-% Set Matlab  
-close all;  
-clear all;  
-clc;  
+function  [image, CInside, COutside] = levelset_cv(input_image)
+%% Description
+% Author: HSW  
+% Date；2015/4/12  
+% HARBIN INSTITUTE OF TECHNOLOGY   
 % demo 编号,需要修改  
 ii = 1;  
-% Add path  
+% %Add path  
 % addpath(genpath('./Image'));  
 % addpath(genpath('./CV solver'));   
-% save result path  
-SaveFilePath = './Results/';  
+% % save result path  
+% SaveFilePath = './Results/';  
   
-% Read Image  
+%% Read Image  
 c0 = 2;  
 imgID = 6;  
-  
-% Img = imread('Image\vessel2.bmp'); 
-Img = imread('test.jpg');
+Img = input_image;
+% Img = imread('test 3.jpg');
+disp('processing')
 Temp = Img;  
 if ndims(Img) == 3  
     Img = rgb2gray(Img);  
 end  
 Img = double(Img);  
-% Initial phi is the level set function  
+%% Initial phi is the level set function  
 switch imgID  
     case 1  
         phi= ones(size(Img(:,:,1))).*c0;  
@@ -106,12 +103,12 @@ switch imgID
         hold off;  
     case 6  
         % 产生随机位置  
-        figure;  
-        imshow(Temp);colormap;  
+%         figure;  
+%         imshow(Temp);colormap;  
         rand('seed',0);  
         boardsize = 20; %距离边界的位置  
-        iscircle = 1; % 产生圆形,否则产生矩形  
-        r = 10; %产生圆形时为半径，产生矩形时为(1/2)*边长  
+        iscircle = 1;   % 产生圆形,否则产生矩形  
+        r = 10;         %产生圆形时为半径，产生矩形时为(1/2)*边长  
         if r > boardsize  
             r = boardsize;  
         end  
@@ -140,9 +137,9 @@ switch imgID
                 end  
             end  
         end  
-        hold on;  
-        [c,h] = contour(phi,[0 0],'r');  
-        hold off;  
+%         hold on;  
+%         [c,h] = contour(phi,[0 0],'r');  
+%         hold off;  
     case 7  
         % 用鼠标获取中心位置  
         figure;  
@@ -183,55 +180,50 @@ switch imgID
         hold off;  
 end%switch imgID  
   
-iterNum = 500; % the total number of the iteration  
-lambda1 = 1;   % the weight parameter of the globe term which is inside the level set  
-lambda2 = 1;   % the weight parameter of the globe term which is ouside the level set  
+iterNum = 500;      % the total number of the iteration  
+lambda1 = 1;        % the weight parameter of the globe term which is inside the level set  
+lambda2 = 1;        % the weight parameter of the globe term which is ouside the level set  
 mu = 0.002*255*255; % the weight parameter of the length term  
-nu = 0; % the weight parameter of the area term  
-pu = 1.0; %the weight parameter of the penalizing term  
-timestep = 0.1; % the time step of the level set function evolution  
-epsilon = 1.0; % the parameter of the Heaviside function and the Dirac delta function  
+nu = 0;             % the weight parameter of the area term  
+pu = 1.0;           %the weight parameter of the penalizing term  
+timestep = 0.1;     % the time step of the level set function evolution  
+epsilon = 1.0;      % the parameter of the Heaviside function and the Dirac delta function  
   
   
   
-% all model's initial level set is same  
+%% all model's initial level set is same  
 phi_CV        = phi;   
-phi_star      = phi;  
-%   
-figure;  
-imshow(Temp); colormap;   
+phi_start     = phi;  
+%    
+% imshow(Temp); colormap;   
   
-%start the level set evolution  
+%% start the level set evolution  
 %CV Model   
-time = cputime;   
+time = cputime;
 for iter = 1:iterNum  
     numIter = 1;   
     % level set evolution.   
-    phi_CV = EVOL_CV(phi_CV, Img, lambda1, lambda2, mu, pu, timestep, epsilon, numIter);   
-    if mod(iter, 10) == 0  
-        contour(phi_CV, [0,0], 'y');   
-    end       
+    [phi_CV, c1, c2] = EVOL_CV(phi_CV, Img, lambda1, lambda2, mu, pu, timestep, epsilon, numIter);   
+%     if mod(iter, 10) == 0  
+%        contour(phi_CV, [0,0], 'y');   
+%     end    
 end   
 totaltime_CV = cputime - time;   
-  
-  
-% Display Results  
+
+%% Display Results  
 % figure;  
 % imshow(Temp);  
 % hold on;  
-% contour(phi_star,[0,0],'r','linewidth',1);  
+% contour(phi_start,[0,0],'r','linewidth',1);  
 % title('Initial Level set');  
-  
+%   
 % figure;   
 % imshow(Temp);   
 % hold on;   
 % contour(phi_CV, [0,0], 'r', 'linewidth', 1);   
-% title('Results of CV model');   
-  
-  
-  
-% Save Results  
-CVFilePath = [SaveFilePath, 'CV\Demo', num2str(ii), '.bmp'];   
-  
-% SaveCV = phi_CV >= 0;   
-% imwrite(SaveCV, CVFilePath, 'bmp');   
+% title('Results of CV model'); 
+CInside = c1;
+COutside = c2;
+image = phi_CV > 0;
+
+end
