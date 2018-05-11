@@ -4,7 +4,7 @@ This is an MATLAB implementation by HSW in 2015.4.12 (HARBIN INSTITUTE OF TECHNO
 
 The entrance is levelset_CV.m, and you can run it with any chosen policy of initialization.
 
-I add the return of c1 and c2, which are the average value of inside and out side the contour respectively. As the origin level set cannot distinguish background and front, i hope the returned value will help with it.
+I add the return of c1 and c2, which are the average values of inside and out side the contour respectively. As the origin level set alogorithm cannot distinguish background and front, I hope the returned value will help with it.
 # References
 [Chan–Vese Segmentation (Pascal Getreuer) and its c implementation]
 (http://www.ipol.im/pub/art/2012/g-cv/?utm_source=doi)
